@@ -58,6 +58,7 @@ def auto_sub_jp(file_type, model_size, is_split, split_method, beam_size, file_n
     toc = time.time()
     print('Done')
     print(f'Time consumpution {toc-tic}s')
+    time_comsumtion = toc-tic
     subs = pysubs2.load_from_whisper(results)
     subs.save(f'{output_dir}/{file_basename}.srt')
 
