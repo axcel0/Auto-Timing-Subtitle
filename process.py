@@ -65,7 +65,8 @@ def auto_sub_jp(file_type, model_size, is_split, split_method, beam_size, file_n
 
     ass_sub = srt2ass(f"{output_dir}/{file_basename}.srt", sub_style, is_split,split_method)
     print(f'ASS subtitle saved as: {ass_sub}')
-    os.remove(f'{file_basename}.mp3')
+    if file_type == "video":
+        os.remove(f'{file_basename}.mp3')
 
     torch.cuda.empty_cache()
     return time_comsumtion
