@@ -14,7 +14,7 @@ def callback():
     model = value_model.get()
     split = value_split.get()
     method = value_method.get()
-    beam = beam_size.get(1.0, "end-1c")
+    beam = beam_size.get()
     file_name = filename
     
     split_.destroy()
@@ -25,13 +25,17 @@ def callback():
     type_menu.destroy()
     split_menu.destroy()
     method_menu.destroy()
-    beam_size.destroy()
+    beam_size_entry.destroy()
     beam_.destroy()
-    time_consum=auto_sub_jp(type_, model, split, method, beam, file_name)
-    if done is not None:
-        done.destroy()
-    done = Label(window, text=f"Done with {round(time_consum)}s!")
-    done.pack()
+    try:
+        time_consum=auto_sub_jp(type_, model, split, method, beam, file_name)
+        if done is not None:
+            done.destroy()
+        done = Label(window, text=f"Done with {round(time_consum)}s!")
+        done.pack()
+    except Exception as e:
+        process['text'] = f"Error: {e}"
+
 def browseFiles():
     global filename
     global path_
@@ -45,7 +49,6 @@ def browseFiles():
     required_list()
     advanced_settings()
     list_model()
-    
 
 def list_model():
     global model_menu
@@ -70,6 +73,7 @@ def required_list():
     value_type.set("Select uploaded file type")
     type_menu = OptionMenu(window, value_type, *type_list)
     type_menu.pack()
+
 def advanced_settings():
     global split_
     global method_
@@ -82,12 +86,12 @@ def advanced_settings():
     if split_ is not None:
         split_.destroy()
     split_ = Label(window, text="Option for split line text by spaces. The splited lines all use the same time stamp, with 'adjust_required' label as remark for manual adjustment")
-    split_.pack
+    split_.pack()
     split_list = ["No","Yes"]
     value_split=StringVar(window)
     value_split.set("Use Split?")
     split_menu = OptionMenu(window, value_split, *split_list)
-    split_menu.pack
+    split_menu.pack()
     
     if method_ is not None:
         method_.destroy()
@@ -103,21 +107,33 @@ def advanced_settings():
         beam_.destroy()
     beam_ = Label(window, text="The higher the Beam Size value, the more paths are explored during recognition, which can help improve recognition accuracy within a certain range,\nbut the relative VRAM usage will also be higher. At the same time, the Beam Size may decrease after exceeding 5-10.\nDefaut Beam size is 5")
     beam_.pack()
-    beam_size = Text(window, height=1, width=20)
-    beam_size.pack()
-    
+    beam_size = StringVar(window, value='5')
+    beam_size_entry = Entry(window, textvariable=beam_size)
+    beam_size_entry.pack()
+
 window = Tk()
 window.title('Auto timing subtitle')
 window.geometry('800x600')
 window.config(background='white')
 
+# Initialize global variables
 path_ = None
 process = None
 split_ = None
 method_ = None
 beam_ = None
 done = None
+
+# Create beam size label and entry
+beam_ = Label(window, text="The higher the Beam Size value, the more paths are explored during recognition, which can help improve recognition accuracy within a certain range,\nbut the relative VRAM usage will also be higher. At the same time, the Beam Size may decrease after exceeding 5-10.\nDefaut Beam size is 5")
+beam_.pack()
+beam_size = StringVar(window, value='5')
+beam_size_entry = Entry(window, textvariable=beam_size)
+beam_size_entry.pack()
+
+# Create "Browse Files" button
 button_explore = Button(window, text="Browse Files", command=browseFiles)
 button_explore.pack()
 
+# Start Tkinter event loop
 window.mainloop()

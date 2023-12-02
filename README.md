@@ -15,13 +15,18 @@ You need to install this package before you run auto_timing_subtitle.py
 * Python : You can access this link to install [python](https://www.python.org/downloads/) and using [pip](https://pypi.org/project/pip/) for installing  packages/libraries
 * FFMPEG
   ```bash
-  pip install ffmpeg
+  pip3 install ffmpeg
 * pysubs2
   ```bash
-  pip install pysubs2
+  pip3 install pysubs2
 * whisper from openai
   ```bash
-  pip install -U openai-whisper
+  pip3 install -U openai-whisper
 * faster-whisper
   ```bash
-  pip install faster-whisper
+  pip3 install faster-whisper
+* if torch already pre installed, then do 
+  pip3 uninstall torch
+* install torch with cuda render
+  ```bash
+  pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121 (for nvidia gpu)

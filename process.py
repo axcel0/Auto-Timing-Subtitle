@@ -11,6 +11,14 @@ from faster_whisper import WhisperModel
 from srt2ass import srt2ass
 
 def auto_sub_jp(file_type, model_size, is_split, split_method, beam_size, file_name):
+    # use cuda core to render torch
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print("CUDA device:", torch.cuda.get_device_name())
+    else:
+        device = torch.device("cpu")
+        print("CPU device")
+
     language = 'ja'
     sub_style = "default"
     is_vad_filter = "False"
@@ -25,6 +33,9 @@ def auto_sub_jp(file_type, model_size, is_split, split_method, beam_size, file_n
     else:
         model = WhisperModel(model_size)
         is_whisperv3 = False
+
+    # Move model to device
+    model = model.to(device)
 
     #Transcribe
     if file_type == "video":
@@ -68,5 +79,4 @@ def auto_sub_jp(file_type, model_size, is_split, split_method, beam_size, file_n
     if file_type == "video":
         os.remove(f'{file_basename}.mp3')
 
-    torch.cuda.empty_cache()
     return time_comsumtion

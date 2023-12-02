@@ -1,0 +1,5 @@
+pip3 install ffmpeg
+pip3 install pysubs2
+pip3 install -U openai-whisper
+pip3 install faster-whisper
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121 (for nvidia gpu)
