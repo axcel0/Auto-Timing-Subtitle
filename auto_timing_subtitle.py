@@ -1,4 +1,3 @@
-from enum import auto
 from tkinter import *
 from tkinter import filedialog
 from process import auto_sub_jp
@@ -8,7 +7,7 @@ def callback():
     global done
     if process is not None:
         process.destroy()
-    process = Label(window,text="procssing.....")
+    process = Label(window,text="processing.....")
     process.pack()
     
     type_ = value_type.get()
@@ -28,10 +27,10 @@ def callback():
     method_menu.destroy()
     beam_size.destroy()
     beam_.destroy()
-    auto_sub_jp(type_, model, split, method, beam, file_name)
+    time_consum=auto_sub_jp(type_, model, split, method, beam, file_name)
     if done is not None:
         done.destroy()
-    done = Label(window, text="Done!")
+    done = Label(window, text=f"Done with {round(time_consum)}s!")
     done.pack()
 def browseFiles():
     global filename
