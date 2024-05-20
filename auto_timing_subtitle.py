@@ -1,6 +1,36 @@
 import sys
+import platform
+import torch
+import torch.nn as nn
+import os
 from PyQt6.QtWidgets import QApplication, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget, QFileDialog, QComboBox, QErrorMessage
 from process import auto_sub_jp
+
+class WhisperModel(nn.Module):
+    def __init__(self, model_name, device):
+        super(WhisperModel, self).__init__()
+        self.model = torch.hub.load('snakers4/silero-models', model_name, source='local', path='pretrained')
+        self.model.to(device)
+        self.model.eval()
+
+    def forward(self, input_values):
+        with torch.no_grad():
+            output = self.model(input_values)
+        return output
+    
+
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+def print_hardware_info():
+    # Print CPU info
+    cpu_info = f"CPU: {platform.processor()}"
+
+    # Check for CUDA (GPU)
+    if torch.cuda.is_available():
+        gpu_info = f"GPU: {torch.cuda.get_device_name(0)}"
+    else:
+        gpu_info = "No GPU available."
+
+    return cpu_info, gpu_info
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -10,6 +40,10 @@ class MainWindow(QWidget):
         self.setGeometry(100, 100, 800, 600)
 
         self.layout = QVBoxLayout()
+
+        cpu_info, gpu_info = print_hardware_info()
+        self.hardware_info_label = QLabel(f"Hardware Info:\n{cpu_info}\n{gpu_info}")
+        self.layout.addWidget(self.hardware_info_label)
 
         self.beam_size_label = QLabel("The higher the Beam Size value, the more paths are explored during recognition, which can help improve recognition accuracy within a certain range,\nbut the relative VRAM usage will also be higher. At the same time, the Beam Size may decrease after exceeding 5-10.\nDefaut Beam size is 5")
         self.layout.addWidget(self.beam_size_label)
